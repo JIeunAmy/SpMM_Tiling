@@ -50,6 +50,16 @@ __global__ void csr_mat_mul(int rowA, int colA, int *csrRowPtrA, int *csrColIdxA
     int row = (blockIdx.y*TI+threadIdx.y);
     int col = (blockIdx.x*TJ+threadIdx.x);
     if(row>=rowA || col >=colA) return;
+    for(int i = csrRowPtrA[row];i<csrRowPtrA[row+1];++i){
+        int c = csrColIdxA[i];
+        if(col==c){
+            for(int n=0;n<N;++n){
+                atomicAdd(&out[row*N+n],csrValA[i]*dnsMat[c*N+n]);
+            }
+            break;
+        }
+        if(c>col) break;
+    }
 }
 
 __global__ void csr_mat_mul_shared1(int rowA, int colA, int *csrRowPtrA, int *csrColIdxA, val_type *csrValA, val_type *dnsMat, val_type *out, int ti, int tj,int N){    
