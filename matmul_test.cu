@@ -64,6 +64,16 @@ __global__ void csr_mat_mul_shared1(int rowA, int colA, int *csrRowPtrA, int *cs
     for(int i=threadIdx.y; i<N; i+=ti){
         dnsMatShared[threadIdx.x*N+i] = dnsMat[rowD*N+i];
     }
+    for(int i = csrRowPtrA[row];i<csrRowPtrA[row+1];++i){
+        int c = csrColIdxA[i];
+        if(col==c){
+            for(int n=0;n<N;++n){
+                atomicAdd(&out[row*N+n],csrValA[i]*dnsMat[c*N+n]);
+            }
+            break;
+        }
+        if(c>col) break;
+    }
 }
 void csr_init(char * filename, int first,char *func_type,int func_type_int, int targeted_execution, int user_ti, int user_tj){
     
@@ -274,52 +284,7 @@ void csr_init(char * filename, int first,char *func_type,int func_type_int, int 
     free(out);
     printf("csr version end\n");
 }
-/*
-void matmul_init(){
-    
-    float *a,*b, *out_2;
-    float *d_a, *d_b, *dd_out;
 
-    a = (float*)malloc(sizeof(float) * K*K); //cpu mem은 "host mem", gpu mem은 "device mem"으로 불림.
-    b = (float*)malloc(sizeof(float) * K*K); //gpu에서 accessible하기 위해선 device memory를 제공해야함.
-    out_2 = (float*)malloc(sizeof(float) * K*K);
-    for(int i=0;i<K;++i){
-        for(int j=0;j<K;++j){
-            a[i*N+j] = 1.0f;
-            b[i*N+j] = 1.0f;
-        }
-    }
-    cudaMalloc((void**)&d_a, sizeof(float)*K*K);
-    cudaMalloc((void**)&d_b, sizeof(float)*K*K);
-    cudaMalloc((void**)&dd_out, sizeof(float)*K*K);
-
-
-    cudaMemcpy(d_a, a, sizeof(float)*K*K, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_b, b, sizeof(float)*K*K, cudaMemcpyHostToDevice);
-    dim3 blockDim(16,16);
-    int gx = (K/blockDim.x);
-    int gy = (K/blockDim.y);
-    dim3 gridDim(gx,gy);
-    mat_mul<<<gridDim,blockDim>>>(dd_out, d_a, d_b,K);
-    //testing<<<gridDim,blockDim>>>(dd_out,K,K);
-    cudaMemcpy(out_2, dd_out, sizeof(float)*K*K, cudaMemcpyDeviceToHost);
-    for(int i=0;i<5;++i){
-        for(int j=0;j<5;++j){
-            printf("%.0f ",out_2[i*K+j]);
-        }
-        printf("\n");
-    }
-
-    cudaFree(d_a);
-    cudaFree(d_b);
-    cudaFree(dd_out);
-
-    free(a);
-    free(b);
-    free(out_2);
-
-}
-*/
 int main(int argc, char ** argv){
 	char *filename;
     char *func_type;
