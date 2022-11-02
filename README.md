@@ -5,7 +5,7 @@
 ### nvcc matmul_test.cu -o matmul_test
 
 # run
-## ./matmul_test {data_dir or data_file} {funtion_type} {funtion_type_int} {targeted_execution} {TI} {TJ}
+## ./matmul_test {data_dir or data_file(.mtx)} {funtion_type} {funtion_type_int} {targeted_execution} {TI} {TJ}
 * select data_dir or datafile. if want to run specific file write file name and set {targeted_execution} as 1. If set targeted_execution as 1, must write TI, TJ.
 * function type is either shared or non_shared
 * if you choose kernel that doesn't use shared memory, set funtion_type_int as 0. otherwise, set function_type_int as 1.
