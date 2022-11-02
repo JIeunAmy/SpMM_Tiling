@@ -316,23 +316,24 @@ int main(int argc, char ** argv){
 
         csr_init(filename,first, func_type, func_type_int,targeted_exectuion,atoi(argv[5]),atoi(argv[6]));
     }
-    while((de = readdir(dr)) != NULL){
-        strcat(dirname,filename);
-        strcat(dirname,de->d_name);
-        strcat(dirname,"/");
-        strcat(dirname,de->d_name);
-        strcat(dirname,".mtx");
-        // printf("%s\n",dirname);
-
-        if(access(dirname,F_OK) != -1){
-            csr_init(dirname,first,func_type,func_type_int, 0,0,0);
-            printf("*****%s %d******\n",dirname,first);
-            first = 0;
-        }
-        strcpy(dirname,"");
-    }
-    closedir(dr);
+    else{
+        while((de = readdir(dr)) != NULL){
+            strcat(dirname,filename);
+            strcat(dirname,de->d_name);
+            strcat(dirname,"/");
+            strcat(dirname,de->d_name);
+            strcat(dirname,".mtx");
+            // printf("%s\n",dirname);
     
+            if(access(dirname,F_OK) != -1){
+                csr_init(dirname,first,func_type,func_type_int, 0,0,0);
+                printf("*****%s %d******\n",dirname,first);
+                first = 0;
+            }
+            strcpy(dirname,"");
+        }
+        closedir(dr);
+    }
 
     // csr_init(filename,first);
     //matmul_init();
