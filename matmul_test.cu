@@ -78,7 +78,7 @@ __global__ void csr_mat_mul_shared1(int rowA, int colA, int *csrRowPtrA, int *cs
         int c = csrColIdxA[i];
         if(col==c){
             for(int n=0;n<N;++n){
-                atomicAdd(&out[row*N+n],csrValA[i]*dnsMatShared[c*N+n]);
+                atomicAdd(&out[row*N+n],csrValA[i]*dnsMatShared[threadIdx.x*N+n]);
             }
             break;
         }
