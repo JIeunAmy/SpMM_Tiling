@@ -12,7 +12,7 @@
  
 ## example
 ### run with data diretory, shared memory using kernel, full tiling set testing
-#### ./matmul_test {data_dir} shared 1 0
+./matmul_test {data_dir} shared 1 0
 
 ### run with data file, non shared memory using kernel, tiling with specific tile parameter with TI = 16,TJ = 64
-#### ./matmul_test {data_file} non_shared 0 1 16 64
+./matmul_test {data_file} non_shared 0 1 16 64
